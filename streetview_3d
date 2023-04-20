@@ -1,0 +1,618 @@
+{
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/seismosmsr/machine_learning/blob/main/streetview_3d\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "4K0RJRFlJmt1",
+        "outputId": "16311f79-584f-405f-901c-5db1510803c7"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Looking in indexes: https://pypi.org/simple, https://us-python.pkg.dev/colab-wheels/public/simple/\n",
+            "Collecting ipyvolume\n",
+            "  Downloading ipyvolume-0.6.1-py3-none-any.whl (1.6 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m1.6/1.6 MB\u001b[0m \u001b[31m54.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting ipyvue>=1.7.0\n",
+            "  Downloading ipyvue-1.9.0-py2.py3-none-any.whl (2.7 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m2.7/2.7 MB\u001b[0m \u001b[31m70.8 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting ipywebrtc\n",
+            "  Downloading ipywebrtc-0.6.0-py2.py3-none-any.whl (260 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m260.7/260.7 kB\u001b[0m \u001b[31m27.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hCollecting traittypes\n",
+            "  Downloading traittypes-0.2.1-py2.py3-none-any.whl (8.6 kB)\n",
+            "Requirement already satisfied: traitlets in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (5.7.1)\n",
+            "Requirement already satisfied: ipywidgets>=7.0.0 in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (8.0.6)\n",
+            "Collecting pythreejs>=2.4.0\n",
+            "  Downloading pythreejs-2.4.2-py3-none-any.whl (3.4 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m3.4/3.4 MB\u001b[0m \u001b[31m7.7 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: requests in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (2.27.1)\n",
+            "Collecting bqplot\n",
+            "  Downloading bqplot-0.12.39-py2.py3-none-any.whl (1.2 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m1.2/1.2 MB\u001b[0m \u001b[31m13.5 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: matplotlib in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (3.7.1)\n",
+            "Collecting ipyvuetify\n",
+            "  Downloading ipyvuetify-1.8.10-py2.py3-none-any.whl (11.7 MB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m11.7/11.7 MB\u001b[0m \u001b[31m59.1 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: numpy in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (1.22.4)\n",
+            "Requirement already satisfied: Pillow in /usr/local/lib/python3.9/dist-packages (from ipyvolume) (9.5.0)\n",
+            "Requirement already satisfied: widgetsnbextension~=4.0.7 in /usr/local/lib/python3.9/dist-packages (from ipywidgets>=7.0.0->ipyvolume) (4.0.7)\n",
+            "Requirement already satisfied: ipython>=6.1.0 in /usr/local/lib/python3.9/dist-packages (from ipywidgets>=7.0.0->ipyvolume) (7.34.0)\n",
+            "Requirement already satisfied: ipykernel>=4.5.1 in /usr/local/lib/python3.9/dist-packages (from ipywidgets>=7.0.0->ipyvolume) (5.5.6)\n",
+            "Requirement already satisfied: jupyterlab-widgets~=3.0.7 in /usr/local/lib/python3.9/dist-packages (from ipywidgets>=7.0.0->ipyvolume) (3.0.7)\n",
+            "Collecting ipydatawidgets>=1.1.1\n",
+            "  Downloading ipydatawidgets-4.3.3-py2.py3-none-any.whl (271 kB)\n",
+            "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m271.7/271.7 kB\u001b[0m \u001b[31m24.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0m\n",
+            "\u001b[?25hRequirement already satisfied: pandas<3.0.0,>=1.0.0 in /usr/local/lib/python3.9/dist-packages (from bqplot->ipyvolume) (1.5.3)\n",
+            "Requirement already satisfied: packaging>=20.0 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (23.1)\n",
+            "Requirement already satisfied: python-dateutil>=2.7 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (2.8.2)\n",
+            "Requirement already satisfied: fonttools>=4.22.0 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (4.39.3)\n",
+            "Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (1.4.4)\n",
+            "Requirement already satisfied: importlib-resources>=3.2.0 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (5.12.0)\n",
+            "Requirement already satisfied: contourpy>=1.0.1 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (1.0.7)\n",
+            "Requirement already satisfied: cycler>=0.10 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (0.11.0)\n",
+            "Requirement already satisfied: pyparsing>=2.3.1 in /usr/local/lib/python3.9/dist-packages (from matplotlib->ipyvolume) (3.0.9)\n",
+            "Requirement already satisfied: certifi>=2017.4.17 in /usr/local/lib/python3.9/dist-packages (from requests->ipyvolume) (2022.12.7)\n",
+            "Requirement already satisfied: urllib3<1.27,>=1.21.1 in /usr/local/lib/python3.9/dist-packages (from requests->ipyvolume) (1.26.15)\n",
+            "Requirement already satisfied: idna<4,>=2.5 in /usr/local/lib/python3.9/dist-packages (from requests->ipyvolume) (3.4)\n",
+            "Requirement already satisfied: charset-normalizer~=2.0.0 in /usr/local/lib/python3.9/dist-packages (from requests->ipyvolume) (2.0.12)\n",
+            "Requirement already satisfied: zipp>=3.1.0 in /usr/local/lib/python3.9/dist-packages (from importlib-resources>=3.2.0->matplotlib->ipyvolume) (3.15.0)\n",
+            "Requirement already satisfied: ipython-genutils in /usr/local/lib/python3.9/dist-packages (from ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (0.2.0)\n",
+            "Requirement already satisfied: tornado>=4.2 in /usr/local/lib/python3.9/dist-packages (from ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (6.2)\n",
+            "Requirement already satisfied: jupyter-client in /usr/local/lib/python3.9/dist-packages (from ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (6.1.12)\n",
+            "Requirement already satisfied: matplotlib-inline in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.1.6)\n",
+            "Requirement already satisfied: jedi>=0.16 in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.18.2)\n",
+            "Requirement already satisfied: backcall in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.2.0)\n",
+            "Requirement already satisfied: prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0 in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (3.0.38)\n",
+            "Requirement already satisfied: setuptools>=18.5 in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (67.6.1)\n",
+            "Requirement already satisfied: decorator in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (4.4.2)\n",
+            "Requirement already satisfied: pygments in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (2.14.0)\n",
+            "Requirement already satisfied: pexpect>4.3 in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (4.8.0)\n",
+            "Requirement already satisfied: pickleshare in /usr/local/lib/python3.9/dist-packages (from ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.7.5)\n",
+            "Requirement already satisfied: pytz>=2020.1 in /usr/local/lib/python3.9/dist-packages (from pandas<3.0.0,>=1.0.0->bqplot->ipyvolume) (2022.7.1)\n",
+            "Requirement already satisfied: six>=1.5 in /usr/local/lib/python3.9/dist-packages (from python-dateutil>=2.7->matplotlib->ipyvolume) (1.16.0)\n",
+            "Requirement already satisfied: parso<0.9.0,>=0.8.0 in /usr/local/lib/python3.9/dist-packages (from jedi>=0.16->ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.8.3)\n",
+            "Requirement already satisfied: ptyprocess>=0.5 in /usr/local/lib/python3.9/dist-packages (from pexpect>4.3->ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.7.0)\n",
+            "Requirement already satisfied: wcwidth in /usr/local/lib/python3.9/dist-packages (from prompt-toolkit!=3.0.0,!=3.0.1,<3.1.0,>=2.0.0->ipython>=6.1.0->ipywidgets>=7.0.0->ipyvolume) (0.2.6)\n",
+            "Requirement already satisfied: pyzmq>=13 in /usr/local/lib/python3.9/dist-packages (from jupyter-client->ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (23.2.1)\n",
+            "Requirement already satisfied: jupyter-core>=4.6.0 in /usr/local/lib/python3.9/dist-packages (from jupyter-client->ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (5.3.0)\n",
+            "Requirement already satisfied: platformdirs>=2.5 in /usr/local/lib/python3.9/dist-packages (from jupyter-core>=4.6.0->jupyter-client->ipykernel>=4.5.1->ipywidgets>=7.0.0->ipyvolume) (3.2.0)\n",
+            "Installing collected packages: ipywebrtc, traittypes, ipyvue, ipydatawidgets, bqplot, pythreejs, ipyvuetify, ipyvolume\n",
+            "Successfully installed bqplot-0.12.39 ipydatawidgets-4.3.3 ipyvolume-0.6.1 ipyvue-1.9.0 ipyvuetify-1.8.10 ipywebrtc-0.6.0 pythreejs-2.4.2 traittypes-0.2.1\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip install google_streetview transformers\n",
+        "!pip install pyproj\n",
+        "!pip install open3d\n",
+        "!pip install geopy\n",
+        "!pip install --upgrade pillow\n",
+        "!pip uninstall transformers\n",
+        "!pip install transformers\n",
+        "!pip install albumentations\n",
+        "!pip install open3d jupyter\n",
+        "!pip install ipyvolume\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "8LcQTkLjI626"
+      },
+      "outputs": [],
+      "source": [
+        "import os\n",
+        "import requests\n",
+        "from google_streetview import api\n",
+        "from transformers import pipeline, AutoFeatureExtractor, AutoModelForDepthEstimation\n",
+        "from PIL import Image\n",
+        "import numpy as np\n",
+        "import torch\n",
+        "import json\n",
+        "from geopy import Point\n",
+        "import pyproj\n",
+        "from pyproj import Proj\n",
+        "import cv2\n",
+        "import open3d as o3d\n",
+        "import random\n",
+        "import ipyvolume as ipv\n",
+        "# from albumentations.augmentations.functional import convert_image_dtype, resize\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "TcAtYha4JAKq"
+      },
+      "outputs": [],
+      "source": [
+        "# Set up your Google API key\n",
+        "GOOGLE_API_KEY = \"AIzaSyCjfZ_8O2mhuDppDXbrnhxdK2sIYp48GOo\"\n",
+        "\n",
+        "# Define the Hugging Face model you want to use\n",
+        "HF_MODEL = \"nvidia/segformer-b0-finetuned-ade-512-512\"\n",
+        "\n",
+        "\n",
+        "# Example coordinates (latitude, longitude)\n",
+        "coordinates = (40.712776, -74.005974)  # New York City"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "5YQbc1zRJCf8"
+      },
+      "outputs": [],
+      "source": [
+        "# Function to download an image and save it locally\n",
+        "def download_image(url, filepath):\n",
+        "    response = requests.get(url)\n",
+        "    with open(filepath, \"wb\") as img_file:\n",
+        "        img_file.write(response.content)\n",
+        "\n",
+        "# Function to get the Google Street View image URL\n",
+        "def get_streetview_image_url(lat, lng, key, heading):\n",
+        "    params = [{\n",
+        "        \"size\": \"640x640\",\n",
+        "        \"location\": f\"{lat},{lng}\",\n",
+        "        \"heading\": heading,\n",
+        "        \"pitch\": \"0\",\n",
+        "        \"fov\": \"90\",\n",
+        "        \"key\": key,\n",
+        "    }]\n",
+        "    results = api.results(params)\n",
+        "    metadata = results.metadata[0]\n",
+        "\n",
+        "    if metadata[\"status\"] == \"OK\":\n",
+        "        pano_id = metadata[\"pano_id\"]\n",
+        "        url = f\"https://maps.googleapis.com/maps/api/streetview?size=640x640&pano={pano_id}&heading={heading}&key={key}\"\n",
+        "        return url\n",
+        "    else:\n",
+        "        print(\"Error getting Street View image. Metadata:\", metadata)\n",
+        "        return None\n",
+        "\n",
+        "\n",
+        "# Function to classify an image using a Hugging Face model\n",
+        "def segment_image(filepath, model):\n",
+        "    device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n",
+        "    segmentor = pipeline(\"image-segmentation\", model=model, device=device.index if device.type == \"cuda\" else -1)\n",
+        "    return segmentor(filepath)\n",
+        "\n",
+        "def depth_image(filepath, model):\n",
+        "    device = torch.device(\"cuda\" if torch.cuda.is_available() else \"cpu\")\n",
+        "    depth = pipeline(\"depth-estimation\", model=model, device=device.index if device.type == \"cuda\" else -1)\n",
+        "    return depth(filepath)\n",
+        "\n",
+        "def overlay_masks_on_image(image_filepath, segmentation_results, alpha=0.5):\n",
+        "    base_image = Image.open(image_filepath).convert(\"RGBA\")\n",
+        "    overlay = Image.new(\"RGBA\", base_image.size, (255, 255, 255, 0))\n",
+        "    \n",
+        "    for result in segmentation_results:\n",
+        "        mask = result[\"mask\"].convert(\"RGBA\")\n",
+        "        color = np.random.randint(0, 256, 3).tolist() + [int(255 * alpha)]\n",
+        "        colored_mask = Image.new(\"RGBA\", mask.size, tuple(color))\n",
+        "        overlay.paste(colored_mask, mask=mask)\n",
+        "    \n",
+        "    combined_image = Image.alpha_composite(base_image, overlay)\n",
+        "    return combined_image\n",
+        "\n",
+        "def create_false_color_image(segmentation_results, image_size):\n",
+        "    label_colors = {}\n",
+        "    \n",
+        "    for result in segmentation_results:\n",
+        "        label = result['label']\n",
+        "        if label not in label_colors:\n",
+        "            label_colors[label] = [random.randint(0, 255) for _ in range(3)]\n",
+        "\n",
+        "    false_color_image = np.zeros((image_size[1], image_size[0], 3), dtype=np.uint8)\n",
+        "\n",
+        "    for result in segmentation_results:\n",
+        "        label = result['label']\n",
+        "        mask = np.array(result['mask'])\n",
+        "        color = np.array(label_colors[label], dtype=np.uint8)\n",
+        "        false_color_image[mask > 128] = color\n",
+        "\n",
+        "    return Image.fromarray(false_color_image), label_colors\n",
+        "\n",
+        "\n",
+        "# Function to save classes and their associated integer values to a JSON file\n",
+        "def save_classes_to_json(class_order, filepath):\n",
+        "    classes = {label: i for i, label in enumerate(class_order)}\n",
+        "    with open(filepath, \"w\") as json_file:\n",
+        "        json.dump(classes, json_file)\n",
+        "\n",
+        "\n",
+        "def latlng_to_ecef(lat, lng):\n",
+        "    # Define the WGS84 ellipsoid and the ECEF coordinate system\n",
+        "    wgs84 = pyproj.Proj(proj='latlong', datum='WGS84', radians=True)\n",
+        "    ecef = pyproj.Proj(proj='geocent', datum='WGS84', radians=True)\n",
+        "\n",
+        "    # Check if latitude and longitude are scalars\n",
+        "    if not (np.isscalar(lat) and np.isscalar(lng)):\n",
+        "        raise ValueError(\"Latitude and longitude must be scalars\")\n",
+        "\n",
+        "    # Convert lat, lng to ECEF coordinates\n",
+        "    x, y, z = pyproj.transform(wgs84, ecef, lng, lat, 0, radians=True)\n",
+        "\n",
+        "    return x, y, z\n",
+        "\n",
+        "\n",
+        "def calc_rotation_matrix(heading, pitch):\n",
+        "    # Convert heading and pitch to radians\n",
+        "    h_rad = np.radians(heading)\n",
+        "    p_rad = np.radians(pitch)\n",
+        "\n",
+        "    # Calculate rotation matrix\n",
+        "    cos_h = np.cos(h_rad)\n",
+        "    sin_h = np.sin(h_rad)\n",
+        "    cos_p = np.cos(p_rad)\n",
+        "    sin_p = np.sin(p_rad)\n",
+        "    Rz = np.array([[cos_h, -sin_h, 0], [sin_h, cos_h, 0], [0, 0, 1]])\n",
+        "    Ry = np.array([[cos_p, 0, sin_p], [0, 1, 0], [-sin_p, 0, cos_p]])\n",
+        "    R = Ry.dot(Rz)\n",
+        "\n",
+        "    return R\n",
+        "\n",
+        "def project_pixel(pixel, depth, fov, R):\n",
+        "    # Convert pixel to normalized device coordinates (NDC)\n",
+        "    ndc_x = (pixel[0] + 0.5) / depth.shape[1] - 0.5\n",
+        "    ndc_y = (pixel[1] + 0.5) / depth.shape[0] - 0.5\n",
+        "\n",
+        "    # Convert NDC to camera coordinates\n",
+        "    tan_fov = np.tan(np.radians(fov) / 2)\n",
+        "    cam_x = ndc_x * depth.shape[1] / (2 * tan_fov)\n",
+        "    cam_y = ndc_y * depth.shape[0] / (2 * tan_fov)\n",
+        "    cam_z = -depth[pixel[1], pixel[0]]\n",
+        "\n",
+        "    # Convert camera coordinates to world coordinates\n",
+        "    cam_pos = np.array([0, 0, 0])\n",
+        "    world_pos = R.T.dot(np.array([cam_x, cam_y, cam_z])) + cam_pos\n",
+        "\n",
+        "    return world_pos\n",
+        "\n",
+        "def project_image(image_file, lat, lng, heading, pitch):\n",
+        "    # Load image and depth map\n",
+        "    image = cv2.imread(image_file)\n",
+        "    depth_file = image_file.replace('.jpg', '_depth.npy')\n",
+        "    depth = np.load(depth_file)\n",
+        "\n",
+        "    # Convert lat, lng to ECEF coordinates\n",
+        "    x, y, z = latlng_to_ecef(lat, lng)\n",
+        "\n",
+        "    # Calculate rotation matrix\n",
+        "    R = calc_rotation_matrix(heading, pitch)\n",
+        "\n",
+        "    # Project each pixel into 3D space\n",
+        "    points = []\n",
+        "    for y in range(image.shape[0]):\n",
+        "        for x in range(image.shape[1]):\n",
+        "            world_pos = project_pixel((x, y), depth, fov, R)\n",
+        "            points.append((world_pos[0], world_pos[1], world_pos[2], image[y, x, 0], image[y, x, 1], image[y, x, 2]))\n",
+        "\n",
+        "    # Convert points to NumPy array\n",
+        "    points = np.array(points)\n",
+        "\n",
+        "    return points\n",
+        "\n",
+        "def get_depth_map(image_file, extractor, model):\n",
+        "    # Load image and convert to RGB\n",
+        "    image = cv2.imread(image_file)\n",
+        "    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)\n",
+        "\n",
+        "    # Resize image to match model input size\n",
+        "    inputs = cv2.resize(image, (640, 384))\n",
+        "\n",
+        "    # Normalize image pixel values to [0, 1]\n",
+        "    inputs = cv2.normalize(inputs, None, alpha=0, beta=1, norm_type=cv2.NORM_MINMAX, dtype=cv2.CV_32F)\n",
+        "\n",
+        "    # Convert inputs to PyTorch tensor\n",
+        "    inputs = torch.from_numpy(inputs).permute(2, 0, 1).unsqueeze(0)\n",
+        "\n",
+        "    # Extract features from inputs\n",
+        "    with torch.no_grad():\n",
+        "        features = extractor(inputs)['pixel_values']\n",
+        "\n",
+        "    # Estimate depth map from features\n",
+        "    with torch.no_grad():\n",
+        "        outputs = model(features)['log_prediction']\n",
+        "        depth_map = torch.squeeze(outputs, dim=0).exp().numpy()\n",
+        "\n",
+        "    # Resize depth map to match original image size\n",
+        "    depth_map = cv2.resize(depth_map, (image.shape[1], image.shape[0]))\n",
+        "\n",
+        "    return depth_map\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "CsRfsrD0M2Ph",
+        "outputId": "32e714c4-9bcb-438c-f0fa-eac5c4dd7ec5"
+      },
+      "outputs": [
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "Could not find image processor class in the image processor config or the model config. Loading based on pattern matching with the model's feature extractor configuration.\n",
+            "/usr/local/lib/python3.9/dist-packages/transformers/models/segformer/image_processing_segformer.py:99: FutureWarning: The `reduce_labels` parameter is deprecated and will be removed in a future version. Please use `do_reduce_labels` instead.\n",
+            "  warnings.warn(\n"
+          ]
+        },
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "[{'score': None, 'label': 'wall', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FC0E9730A30>}, {'score': None, 'label': 'building', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBF5EB975B0>}, {'score': None, 'label': 'sky', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBF5EB97280>}, {'score': None, 'label': 'tree', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBFC0B2C220>}, {'score': None, 'label': 'road', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBFC0B2C2E0>}, {'score': None, 'label': 'sidewalk', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBFC0B2C160>}, {'score': None, 'label': 'person', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBFC0B2C040>}, {'score': None, 'label': 'car', 'mask': <PIL.Image.Image image mode=L size=640x640 at 0x7FBF5EB37B20>}]\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Download the Google Street View image\n",
+        "image_url = get_streetview_image_url(coordinates[0], coordinates[1], GOOGLE_API_KEY, 120)\n",
+        "if image_url is not None:\n",
+        "    image_filepath = \"streetview_image.jpg\"\n",
+        "    download_image(image_url, image_filepath)\n",
+        "\n",
+        "    # Segment the image using the Hugging Face model\n",
+        "    segmentation_result = segment_image(image_filepath, HF_MODEL)\n",
+        "    print(segmentation_result)\n",
+        "\n",
+        "    # Create a false color image and display the results\n",
+        "    false_color_image, label_colors = create_false_color_image(segmentation_result, (640, 640))\n",
+        "    false_color_image.show()\n",
+        "\n",
+        "    # Save the classes and their colors to a JSON file\n",
+        "    json_filepath = \"classes.json\"\n",
+        "    save_classes_to_json(label_colors, json_filepath)\n",
+        "else:\n",
+        "    print(\"Failed to download the Street View image.\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "id": "nKt1YRFEROyA"
+      },
+      "outputs": [],
+      "source": [
+        "image_filepaths = []\n",
+        "headings = range(0, 360, 30)\n",
+        "\n",
+        "for heading in headings:\n",
+        "    image_url = get_streetview_image_url(coordinates[0], coordinates[1], GOOGLE_API_KEY, heading)\n",
+        "    if image_url is not None:\n",
+        "        image_filepath = f\"streetview_image_{heading}.jpg\"\n",
+        "        download_image(image_url, image_filepath)\n",
+        "        image_filepaths.append(image_filepath)\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XoDjb9suWNxr",
+        "outputId": "c88798e8-0fc2-43bd-8165-e54df10e760a"
+      },
+      "outputs": [
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "Could not find image processor class in the image processor config or the model config. Loading based on pattern matching with the model's feature extractor configuration.\n",
+            "/usr/local/lib/python3.9/dist-packages/transformers/models/segformer/image_processing_segformer.py:99: FutureWarning: The `reduce_labels` parameter is deprecated and will be removed in a future version. Please use `do_reduce_labels` instead.\n",
+            "  warnings.warn(\n",
+            "Some weights of DPTForDepthEstimation were not initialized from the model checkpoint at Intel/dpt-large and are newly initialized: ['neck.fusion_stage.layers.0.residual_layer1.convolution2.weight', 'neck.fusion_stage.layers.0.residual_layer1.convolution1.bias', 'neck.fusion_stage.layers.0.residual_layer1.convolution2.bias', 'neck.fusion_stage.layers.0.residual_layer1.convolution1.weight']\n",
+            "You should probably TRAIN this model on a down-stream task to be able to use it for predictions and inference.\n",
+            "Could not find image processor class in the image processor config or the model config. Loading based on pattern matching with the model's feature extractor configuration.\n"
+          ]
+        }
+      ],
+      "source": [
+        "import open3d as o3d\n",
+        "\n",
+        "def create_point_cloud(segmentation_results, lat, lng, heading, pitch, depth_map, fov):\n",
+        "    # Convert lat, lng to ECEF coordinates\n",
+        "    x, y, z = latlng_to_ecef(lat, lng)\n",
+        "\n",
+        "    # Calculate rotation matrix\n",
+        "    R = calc_rotation_matrix(heading, pitch)\n",
+        "\n",
+        "    # Initialize an empty point cloud\n",
+        "    point_cloud = o3d.geometry.PointCloud()\n",
+        "\n",
+        "    for result in segmentation_results:\n",
+        "        mask = np.array(result['mask'])\n",
+        "        label = result['label']\n",
+        "        for y in range(mask.shape[0]):\n",
+        "            for x in range(mask.shape[1]):\n",
+        "                if mask[y, x]:\n",
+        "                    world_pos = project_pixel((x, y), depth_map, fov, R)\n",
+        "                    point = world_pos + np.array([x, y, z])\n",
+        "                    point_cloud.points.append(point)\n",
+        "\n",
+        "    return point_cloud\n",
+        "\n",
+        "# Get depth map and segmentation image\n",
+        "\n",
+        "segmentation_result = segment_image(image_filepath, \"nvidia/segformer-b0-finetuned-ade-512-512\")\n",
+        "depth_result =  depth_image(image_filepath, \"Intel/dpt-large\")"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "2_B-oszqX7Rv",
+        "outputId": "9047ae14-804b-4097-cc5a-e523c692f8c2"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "{'predicted_depth': tensor([[[ 6.9599,  6.9540,  6.9659,  ..., 17.0785, 17.2310, 17.3946],\n",
+            "         [ 6.9570,  6.9970,  6.9993,  ..., 17.2690, 17.3682, 17.3684],\n",
+            "         [ 6.9684,  7.0250,  6.9999,  ..., 17.4177, 17.3894, 17.2874],\n",
+            "         ...,\n",
+            "         [25.2291, 25.4250, 25.7711,  ..., 28.9417, 28.7900, 29.1497],\n",
+            "         [25.4177, 25.4801, 25.7945,  ..., 28.9013, 29.1992, 29.5253],\n",
+            "         [25.4722, 25.6083, 25.8433,  ..., 29.5536, 29.8542, 30.1683]]]), 'depth': <PIL.Image.Image image mode=L size=640x640 at 0x7FC0E9730A30>}\n"
+          ]
+        }
+      ],
+      "source": [
+        "# Print the depth_result variable\n",
+        "print(depth_result)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "-JuAR862UBWf",
+        "outputId": "f807d535-579b-4f60-eaec-72d2af781a67"
+      },
+      "outputs": [
+        {
+          "name": "stderr",
+          "output_type": "stream",
+          "text": [
+            "<ipython-input-5-bf8c1ce2208f>:89: FutureWarning: This function is deprecated. See: https://pyproj4.github.io/pyproj/stable/gotchas.html#upgrading-to-pyproj-2-from-pyproj-1\n",
+            "  x, y, z = pyproj.transform(wgs84, ecef, lng, lat, 0, radians=True)\n"
+          ]
+        }
+      ],
+      "source": [
+        "# # Create a point cloud from segmented data\n",
+        "depth_map = np.array(depth_result['depth'])\n",
+        "point_cloud = create_point_cloud(segmentation_result, coordinates[0], coordinates[1], 120, 0, depth_map, 90)\n",
+        "\n"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_LP0TYuRYQwN",
+        "outputId": "ae472eec-3ea1-4bf4-9574-c8e408bc4f47"
+      },
+      "outputs": [
+        {
+          "data": {
+            "text/plain": [
+              "True"
+            ]
+          },
+          "execution_count": 11,
+          "metadata": {},
+          "output_type": "execute_result"
+        }
+      ],
+      "source": [
+        "# # Save the point cloud as a PLY file\n",
+        "o3d.io.write_point_cloud(\"point_cloud.ply\", point_cloud)"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": null,
+      "metadata": {
+        "colab": {
+          "background_save": true,
+          "base_uri": "https://localhost:8080/",
+          "height": 183
+        },
+        "id": "MG-_0HU-YfXG",
+        "outputId": "6d2e3ab4-60e1-4f4a-ca23-743be6748254"
+      },
+      "outputs": [
+        {
+          "name": "stdout",
+          "output_type": "stream",
+          "text": [
+            "Number of points in the point cloud: 409600\n"
+          ]
+        },
+        {
+          "ename": "ValueError",
+          "evalue": "ignored",
+          "output_type": "error",
+          "traceback": [
+            "\u001b[0;31m---------------------------------------------------------------------------\u001b[0m",
+            "\u001b[0;31mValueError\u001b[0m                                Traceback (most recent call last)",
+            "\u001b[0;32m<ipython-input-17-76e1ee8987af>\u001b[0m in \u001b[0;36m<cell line: 5>\u001b[0;34m()\u001b[0m\n\u001b[1;32m      3\u001b[0m \u001b[0mprint\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m\"Number of points in the point cloud:\"\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mlen\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpoint_cloud\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mpoints\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m      4\u001b[0m \u001b[0;31m# Visualize the point cloud using ipyvolume\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m----> 5\u001b[0;31m \u001b[0mipv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mquickscatter\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mpoints\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m0\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mpoints\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m1\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mpoints\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;36m2\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0msize\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;36m1\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mmarker\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0;34m\"sphere\"\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m      6\u001b[0m \u001b[0mipv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mshow\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/ipyvolume/widgets.py\u001b[0m in \u001b[0;36mquickscatter\u001b[0;34m(x, y, z, **kwargs)\u001b[0m\n\u001b[1;32m    521\u001b[0m \u001b[0;32mdef\u001b[0m \u001b[0mquickscatter\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mx\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mz\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    522\u001b[0m     \u001b[0mipv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mfigure\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 523\u001b[0;31m     \u001b[0mipv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mscatter\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mx\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mz\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mkwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    524\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0mipv\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mgcc\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    525\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/ipyvolume/pylab.py\u001b[0m in \u001b[0;36mscatter\u001b[0;34m(x, y, z, color, size, size_selected, color_selected, marker, selection, grow_limits, cast_shadow, receive_shadow, description, **kwargs)\u001b[0m\n\u001b[1;32m    746\u001b[0m     )\n\u001b[1;32m    747\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0mgrow_limits\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 748\u001b[0;31m         \u001b[0m_grow_limits\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0ms\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mx\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0ms\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0my\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0ms\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mz\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    749\u001b[0m     \u001b[0mfig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mscatters\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mfig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mscatters\u001b[0m \u001b[0;34m+\u001b[0m \u001b[0;34m[\u001b[0m\u001b[0ms\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    750\u001b[0m     \u001b[0;32mreturn\u001b[0m \u001b[0ms\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/ipyvolume/pylab.py\u001b[0m in \u001b[0;36m_grow_limits\u001b[0;34m(x, y, z)\u001b[0m\n\u001b[1;32m    279\u001b[0m     \u001b[0mxlim\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0m_grow_limit\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mxlim\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mx\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    280\u001b[0m     \u001b[0mylim\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0m_grow_limit\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mylim\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0my\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 281\u001b[0;31m     \u001b[0mzlim\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0;34m*\u001b[0m\u001b[0m_grow_limit\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mfig\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mzlim\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mz\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    282\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    283\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/ipyvolume/pylab.py\u001b[0m in \u001b[0;36m_grow_limit\u001b[0;34m(limits, values)\u001b[0m\n\u001b[1;32m    266\u001b[0m         \u001b[0;32melse\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    267\u001b[0m             \u001b[0mfinites\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0misfinite\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m--> 268\u001b[0;31m             \u001b[0mnewvmin\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmin\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mfinites\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m    269\u001b[0m             \u001b[0mnewvmax\u001b[0m \u001b[0;34m=\u001b[0m \u001b[0mnp\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mmax\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mvalues\u001b[0m\u001b[0;34m[\u001b[0m\u001b[0mfinites\u001b[0m\u001b[0;34m]\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m    270\u001b[0m     \u001b[0;32mif\u001b[0m \u001b[0mlimits\u001b[0m \u001b[0;32mis\u001b[0m \u001b[0;32mNone\u001b[0m\u001b[0;34m:\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/numpy/core/overrides.py\u001b[0m in \u001b[0;36mamin\u001b[0;34m(*args, **kwargs)\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/numpy/core/fromnumeric.py\u001b[0m in \u001b[0;36mamin\u001b[0;34m(a, axis, out, keepdims, initial, where)\u001b[0m\n\u001b[1;32m   2914\u001b[0m     \u001b[0;36m6\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m   2915\u001b[0m     \"\"\"\n\u001b[0;32m-> 2916\u001b[0;31m     return _wrapreduction(a, np.minimum, 'min', axis, None, out,\n\u001b[0m\u001b[1;32m   2917\u001b[0m                           keepdims=keepdims, initial=initial, where=where)\n\u001b[1;32m   2918\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;32m/usr/local/lib/python3.9/dist-packages/numpy/core/fromnumeric.py\u001b[0m in \u001b[0;36m_wrapreduction\u001b[0;34m(obj, ufunc, method, axis, dtype, out, **kwargs)\u001b[0m\n\u001b[1;32m     84\u001b[0m                 \u001b[0;32mreturn\u001b[0m \u001b[0mreduction\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0maxis\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0maxis\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mout\u001b[0m\u001b[0;34m=\u001b[0m\u001b[0mout\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mpasskwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     85\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0;32m---> 86\u001b[0;31m     \u001b[0;32mreturn\u001b[0m \u001b[0mufunc\u001b[0m\u001b[0;34m.\u001b[0m\u001b[0mreduce\u001b[0m\u001b[0;34m(\u001b[0m\u001b[0mobj\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0maxis\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mdtype\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0mout\u001b[0m\u001b[0;34m,\u001b[0m \u001b[0;34m**\u001b[0m\u001b[0mpasskwargs\u001b[0m\u001b[0;34m)\u001b[0m\u001b[0;34m\u001b[0m\u001b[0;34m\u001b[0m\u001b[0m\n\u001b[0m\u001b[1;32m     87\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n\u001b[1;32m     88\u001b[0m \u001b[0;34m\u001b[0m\u001b[0m\n",
+            "\u001b[0;31mValueError\u001b[0m: zero-size array to reduction operation minimum which has no identity"
+          ]
+        }
+      ],
+      "source": [
+        "import open3d as o3d\n",
+        "o3d.jupyter.draw_geometries([point_cloud])"
+      ]
+    }
+  ],
+  "metadata": {
+    "accelerator": "GPU",
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyPORumqPypRwRmFL4uvLcDi",
+      "include_colab_link": true
+    },
+    "gpuClass": "standard",
+    "kernelspec": {
+      "display_name": "Python 3",
+      "name": "python3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "nbformat": 4,
+  "nbformat_minor": 0
+}
